@@ -5,7 +5,7 @@ import "../../styles/globals.css"
 
 // Create a container for our React app
 const container = document.createElement("div")
-container.id = "clearlock-container"
+container.id = "SecWay-container"
 document.body.appendChild(container)
 
 // Render the React app

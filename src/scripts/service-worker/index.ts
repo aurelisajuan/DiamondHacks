@@ -1,5 +1,5 @@
 chrome.runtime.onInstalled.addListener(() => {
-  console.log("ClearLock extension installed")
+  console.log("SecWay extension installed")
 
   // Set default settings
   chrome.storage.local.set({

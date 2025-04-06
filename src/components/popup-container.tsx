@@ -41,7 +41,7 @@ export const PopupContainer = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Lock className="h-6 w-6" />
-            <h1 className="text-xl font-bold">ClearLock</h1>
+            <h1 className="text-xl font-bold">SecWay</h1>
           </div>
           <span className="text-xs opacity-80">Your AI Ally for Privacy</span>
         </div>
@@ -55,7 +55,7 @@ export const PopupContainer = () => {
         {!scanComplete ? (
           <div className="flex flex-col items-center justify-center h-full space-y-6">
             <div className="text-center space-y-2">
-              <h2 className="text-xl font-semibold text-gray-800">Welcome to ClearLock</h2>
+              <h2 className="text-xl font-semibold text-gray-800">Welcome to SecWay</h2>
               <p className="text-gray-600 text-sm">
                 Scan this website to check for privacy concerns and potential scams
               </p>
@@ -129,7 +129,7 @@ export const PopupContainer = () => {
 
       {/* Footer */}
       <div className="bg-gray-50 p-3 border-t border-gray-200 text-center text-xs text-gray-500">
-        ClearLock • Protecting your privacy, one permission at a time
+        SecWay • Protecting your privacy, one permission at a time
       </div>
     </div>
   )

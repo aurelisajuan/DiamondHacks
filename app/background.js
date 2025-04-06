@@ -1,5 +1,5 @@
 chrome.runtime.onInstalled.addListener(() => {
-  console.log("ClearLock extension installed")
+  console.log("SecWay extension installed")
 })
 
 // Listen for tab updates to analyze new websites

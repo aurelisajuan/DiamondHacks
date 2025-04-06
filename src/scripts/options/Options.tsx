@@ -28,7 +28,7 @@ const Options = () => {
           <Lock className="h-8 w-8 text-white" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">ClearLock Settings</h1>
+          <h1 className="text-3xl font-bold text-gray-800">SecWay Settings</h1>
           <p className="text-gray-500">Configure your privacy protection preferences</p>
         </div>
       </div>
@@ -53,7 +53,7 @@ const Options = () => {
           <Card>
             <CardHeader>
               <CardTitle>General Settings</CardTitle>
-              <CardDescription>Configure how ClearLock operates in your browser</CardDescription>
+              <CardDescription>Configure how SecWay operates in your browser</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex items-center justify-between">
@@ -70,7 +70,7 @@ const Options = () => {
               <div className="space-y-2">
                 <h3 className="font-medium">Scan interval</h3>
                 <p className="text-sm text-gray-500">
-                  How often should ClearLock scan websites you've already visited?
+                  How often should SecWay scan websites you've already visited?
                 </p>
                 <select
                   className="w-full p-2 border rounded-md"
@@ -91,13 +91,13 @@ const Options = () => {
           <Card>
             <CardHeader>
               <CardTitle>Privacy Settings</CardTitle>
-              <CardDescription>Control how ClearLock protects your privacy</CardDescription>
+              <CardDescription>Control how SecWay protects your privacy</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="font-medium">AI-powered suggestions</h3>
-                  <p className="text-sm text-gray-500">Allow ClearLock to suggest privacy improvements</p>
+                  <p className="text-sm text-gray-500">Allow SecWay to suggest privacy improvements</p>
                 </div>
                 <Switch
                   checked={settings.aiSuggestions}
@@ -132,7 +132,7 @@ const Options = () => {
           <Card>
             <CardHeader>
               <CardTitle>Notification Settings</CardTitle>
-              <CardDescription>Control how and when ClearLock notifies you</CardDescription>
+              <CardDescription>Control how and when SecWay notifies you</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex items-center justify-between">

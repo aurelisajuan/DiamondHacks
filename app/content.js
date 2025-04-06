@@ -1,4 +1,4 @@
-console.log("ClearLock content script loaded")
+console.log("SecWay content script loaded")
 
 // Analyze the current page
 function analyzePage() {

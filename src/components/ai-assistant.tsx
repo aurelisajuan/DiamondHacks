@@ -17,7 +17,7 @@ export const AIAssistant = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
-      content: "Hi there! I'm your ClearLock AI assistant. How can I help you with your privacy and security today?",
+      content: "Hi there! I'm your SecWay AI assistant. How can I help you with your privacy and security today?",
       sender: "assistant",
       timestamp: new Date(),
     },
@@ -102,7 +102,7 @@ export const AIAssistant = () => {
                       </div>
                     </Avatar>
                   )}
-                  <span className="text-xs font-medium">{message.sender === "user" ? "You" : "ClearLock AI"}</span>
+                  <span className="text-xs font-medium">{message.sender === "user" ? "You" : "SecWay AI"}</span>
                 </div>
                 <p className="text-sm">{message.content}</p>
               </div>
