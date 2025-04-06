@@ -12,7 +12,6 @@ const rollupInput = getRollupInput([
     "./src/scripts/options/index.tsx",
     "./src/scripts/options/options.html",
     "./src/scripts/popup/index.tsx",
-    "./src/scripts/popup/popup.html",
     "./src/scripts/onInstalled/index.tsx",
     "./src/scripts/onInstalled/onInstalled.html",
     "./src/scripts/service-worker/service-worker.ts",

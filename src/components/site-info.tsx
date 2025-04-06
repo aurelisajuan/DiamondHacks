@@ -1,35 +1,36 @@
-import { useState, useEffect } from "react"
-import { Badge } from "../components/ui/badge"
-import { Lock } from "lucide-react"
-import React from "react"
+import { useState, useEffect } from "react";
+import { Badge } from "../components/ui/badge";
+import { Lock } from "lucide-react";
+import React from "react";
 
 export const SiteInfo = () => {
   const [currentSite, setCurrentSite] = useState({
-    url: "example.com",
-    title: "Example Website",
-    isSecure: true,
-  })
+    url: "Loading...",
+    title: "Loading Tab Info",
+    isSecure: false,
+  });
 
-  // In a real extension, you would get this from chrome.tabs API
   useEffect(() => {
-    // Check if chrome is defined (running in a browser extension context)
-    if (typeof chrome !== "undefined" && chrome.tabs) {
-      // Get the current tab
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (tabs[0]?.url) {
-          const url = new URL(tabs[0].url)
-          setCurrentSite({
-            url: url.hostname,
-            title: tabs[0].title || "Unknown Website",
-            isSecure: url.protocol === "https:",
-          })
+    if (typeof chrome !== "undefined" && chrome.tabs?.query) {
+      (async () => {
+        try {
+          const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+          if (tabs[0]?.url) {
+            const url = new URL(tabs[0].url);
+            setCurrentSite({
+              url: url.hostname,
+              title: tabs[0].title || "Untitled Tab",
+              isSecure: url.protocol === "https:",
+            });
+          }
+        } catch (error) {
+          console.error("Failed to query tabs:", error);
         }
-      })
+      })();
     } else {
-      // Handle the case where chrome is not defined (e.g., running in a regular browser environment)
-      console.warn("Chrome API not available. Running in a non-extension environment.")
+      console.warn("Chrome API not available. Running in a non-extension environment.");
     }
-  }, [])
+  }, []);
 
   return (
     <div className="bg-gray-50 p-3 border-b border-gray-200">
@@ -51,6 +52,5 @@ export const SiteInfo = () => {
         </Badge>
       </div>
     </div>
-  )
-}
-
+  );
+};

@@ -4,21 +4,31 @@
     "version": "1.0.0",
     "description": "Your AI Ally for Privacy You Understand",
     "action": {
-        "default_popup": "src/scripts/popup/popup.html",
-        "default_icon": {
-            "16": "icon16.png",
-            "48": "icon48.png",
-            "128": "icon128.png"
-        }
-    },
-    "permissions": ["activeTab", "storage", "scripting"],
-    "host_permissions": ["<all_urls>"],
-    "icons": {
+    "default_icon": {
         "16": "icon16.png",
         "48": "icon48.png",
         "128": "icon128.png"
+    }
+    },
+    "options_page": "src/scripts/options/options.html",
+    "background": {
+    "service_worker": "src/scripts/service-worker/index.ts",
+    "type": "module"
+    },
+    "permissions": ["activeTab", "storage", "scripting"],
+    "host_permissions": ["<all_urls>"],
+    "content_scripts": [
+    {
+        "matches": ["<all_urls>"],
+        "js": ["src/scripts/content/index.tsx"]
+    }
+    ],
+    "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
     },
     "content_security_policy": {
-        "extension_pages": "script-src 'self' 'unsafe-inline'; object-src 'self'"
+    "extension_pages": "script-src 'self' 'unsafe-inline'; object-src 'self'"
     }
 }

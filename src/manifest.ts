@@ -1,136 +1,44 @@
-import fs from 'fs-extra'
-import path from 'path'
+import type { ManifestV3Export } from "@crxjs/vite-plugin"
 
-interface Manifest {
-  manifest_version: number
-  name: string
-  version: string
-  description: string
+// Define the manifest object
+const manifest: ManifestV3Export = {
+  manifest_version: 3,
+  name: "ClearLock",
+  version: "1.0.0",
+  description: "Your AI Ally for Privacy You Understand",
   action: {
-    default_popup: string
-  }
-  options_ui: {
-    page: string
-    open_in_tab: boolean
-  }
+    // Instead of opening a popup, we'll open the options page
+    default_icon: {
+      "16": "src/assets/icon16.png",
+      "48": "src/assets/icon48.png",
+      "128": "src/assets/icon128.png",
+    },
+  },
+  options_page: "src/scripts/options/options.html",
   background: {
-    service_worker: string
-    type: string
-  }
+    service_worker: "src/scripts/service-worker/index.ts",
+    type: "module",
+  },
+  permissions: ["activeTab", "storage", "scripting"],
+  host_permissions: ["<all_urls>"],
+  content_scripts: [
+    {
+      matches: ["<all_urls>"],
+      js: ["src/scripts/content/index.tsx"],
+    },
+  ],
   icons: {
-    [key: number]: string
-  }
-  permissions: string[]
-  content_scripts: Array<{
-    matches: string[]
-    js: string[]
-    run_at?: string
-  }>
-  web_accessible_resources?: Array<{
-    matches: string[]
-    resources: string[]
-  }>
-  commands?: {
-    [key: string]: {
-      suggested_key: {
-        default: string
-        mac?: string
-        windows?: string
-        chromeos?: string
-        linux?: string
-      }
-      description: string
-    }
-  }
+    "16": "src/assets/icon16.png",
+    "48": "src/assets/icon48.png",
+    "128": "src/assets/icon128.png",
+  },
 }
 
-const createBaseManifest = async (): Promise<Manifest> => {
-  try {
-    const pkg = await fs.readJSON('package.json')
-
-    return {
-      manifest_version: 3,
-      name: pkg.longName ?? pkg.name ?? 'GIVE ME A NAME',
-      version: pkg.version,
-      description: pkg.description ?? 'GIVE ME A DESCRIPTION',
-      action: {
-        default_popup: './src/scripts/popup/popup.html',
-      },
-      options_ui: {
-        page: './src/scripts/options/options.html',
-        open_in_tab: true,
-      },
-      background: {
-        service_worker: 'js/service-worker.js',
-        type: 'module',
-      },
-      icons: {
-        16: './assets/icon-16.png',
-        48: './assets/icon-48.png',
-        128: './assets/icon-128.png',
-      },
-      permissions: ['scripting'],
-      content_scripts: [
-        {
-          matches: ['<all_urls>'],
-          js: ['./js/contentScript.js'],
-          run_at: 'document_start',
-        },
-      ],
-      commands: {
-        refresh_extension: {
-          suggested_key: {
-            default: 'Ctrl+Space',
-          },
-          description: 'Refresh Extension', // https://developer.chrome.com/docs/extensions/reference/commands/
-        },
-      },
-    }
-  } catch (error) {
-    console.error('Error reading package.json:', error)
-    throw error
-  }
+// Export the writeManifest function that the build system is looking for
+export function writeManifest() {
+  return manifest
 }
 
-const getManifest = async (resources: string[]): Promise<Manifest> => {
-  try {
-    const baseManifest = await createBaseManifest()
-    return {
-      ...baseManifest,
-      web_accessible_resources: [
-        {
-          matches: ['https://*/*', 'http://*/*'],
-          resources,
-        },
-      ],
-    }
-  } catch (error) {
-    console.error('Error creating manifest:', error)
-    throw error
-  }
-}
+// Also export the manifest as default for compatibility
+export default manifest
 
-const readJsFiles = async (dir: string): Promise<string[]> => {
-  try {
-    const files = await fs.readdir(dir)
-    return files
-      .filter((file: string) => path.extname(file) === '.js')
-      .map((file: string) => path.join(dir, file))
-  } catch (error) {
-    console.error(`Error reading JS files from ${dir}:`, error)
-    throw error
-  }
-}
-
-export const writeManifest = async (): Promise<void> => {
-  try {
-    const dir = 'dist/js'
-    const files = await readJsFiles(dir)
-
-    const manifest = await getManifest(files)
-
-    fs.writeFileSync('dist/manifest.json', JSON.stringify(manifest, null, 2))
-  } catch (error) {
-    console.error('Issue writing manifest.json:', error)
-  }
-}
