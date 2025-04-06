@@ -1,1 +1,1 @@
-import{b as t,j as n,R as e}from"../assets/client-70e7bb7f.js";const s=()=>n.jsx("div",{children:n.jsx("h1",{children:"Thanks for Installing!"})}),o=document.getElementById("onInstalled"),r=t(o);r.render(n.jsx(e.StrictMode,{children:n.jsx(s,{})}));
+import{f as t,j as n,R as e}from"../assets/client-c5b90e9b.js";const s=()=>n.jsx("div",{children:n.jsx("h1",{children:"Thanks for Installing!"})}),o=document.getElementById("onInstalled"),r=t(o);r.render(n.jsx(e.StrictMode,{children:n.jsx(s,{})}));

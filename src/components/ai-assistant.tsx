@@ -4,13 +4,32 @@ import { Input } from "../components/ui/input";
 import { Avatar } from "../components/ui/avatar";
 import { Send, Mic, User, Lock } from "lucide-react";
 import { GoogleGenAI, HarmCategory, HarmBlockThreshold, Content } from '@google/genai';
+import {
+  Message,
+  MessageAvatar,
+  MessageContent,
+} from "@/components/ui/message";
 
-type Message = {
+type MessageType = {
   id: number;
   content: string;
   sender: "user" | "assistant";
   timestamp: Date;
 };
+
+// New component to render markdown-enabled messages for the assistant
+export function MessageWithMarkdown({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="space-y-4">
+      <Message>
+        <MessageAvatar src="https://github.com/ibelick.png" alt="SecWay AI" />
+        <MessageContent markdown className="prose-h2:!mt-0 prose-h2:!scroll-m-0">
+          {children as string}
+        </MessageContent>
+      </Message>
+    </div>
+  );
+}
 
 const SYSTEM_INSTRUCTION = `You are SecWay, a friendly and helpful AI assistant focused on web privacy and security within a browser extension. Your goal is to help non-technical users understand potential risks like excessive permissions, suspicious website behavior, and data collection. Explain concepts clearly and simply using straightforward language. Provide actionable recommendations for securing settings. Keep your tone encouraging, helpful, and educational. Do not mention that you are an AI model. When asked specifically about why a permission is important or risky (like camera, location, microphone, notifications), explain the potential privacy implications of granting it unnecessarily and why users should be cautious.`;
 
@@ -24,9 +43,9 @@ interface AIAssistantProps {
 
 export const AIAssistant: React.FC<AIAssistantProps> = ({
   initialPrompt,
-  onPromptConsumed
+  onPromptConsumed,
 }) => {
-  const [messages, setMessages] = useState<Message[]>([
+  const [messages, setMessages] = useState<MessageType[]>([
     {
       id: 1,
       content: `Hi! I'm SecWay, your AI privacy assistant. How can I help you browse more safely today?`,
@@ -97,7 +116,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({
     }
     setError(null);
 
-    const userMessage: Message = {
+    const userMessage: MessageType = {
       id: Date.now(),
       content: contentToSend,
       sender: "user",
@@ -119,7 +138,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({
     ];
 
     const assistantMessageId = Date.now() + 1;
-    const placeholderAiMessage: Message = {
+    const placeholderAiMessage: MessageType = {
       id: assistantMessageId,
       content: "...",
       sender: "assistant",
@@ -277,26 +296,22 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({
               key={message.id}
               className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
             >
-              <div
-                className={`max-w-[85%] rounded-lg p-3 shadow-sm ${message.sender === "user"
-                  ? "bg-emerald-600 text-white"
-                  : "bg-gray-100 text-gray-800"
-                  } ${message.id === currentStreamedMessageId && message.content === "..." ? 'animate-pulse' : ''}`}
-              >
-                <div className="flex items-center space-x-2 mb-1">
-                  {message.sender === "assistant" ? (
-                    <Avatar className="h-6 w-6 bg-emerald-100 flex items-center justify-center">
-                      <Lock className="h-3 w-3 text-emerald-600" />
-                    </Avatar>
-                  ) : (
+              {message.sender === "assistant" ? (
+                // Use the markdown-enabled component for assistant messages
+                <MessageWithMarkdown>{message.content || " "}</MessageWithMarkdown>
+              ) : (
+                <div
+                  className={`max-w-[85%] rounded-lg p-3 shadow-sm bg-orange-600 text-white ${message.id === currentStreamedMessageId && message.content === "..." ? 'animate-pulse' : ''}`}
+                >
+                  <div className="flex items-center space-x-2 mb-1">
                     <Avatar className="h-6 w-6 bg-white border border-gray-300 flex items-center justify-center">
-                      <User className="h-3 w-3 text-emerald-600" />
+                      <User className="h-3 w-3 text-orange-600" />
                     </Avatar>
-                  )}
-                  <span className="text-xs font-medium">{message.sender === "user" ? "You" : "SecWay AI"}</span>
+                    <span className="text-xs font-medium">You</span>
+                  </div>
+                  <p className="text-sm whitespace-pre-wrap break-words">{message.content || ' '}</p>
                 </div>
-                <p className="text-sm whitespace-pre-wrap break-words">{message.content || ' '}</p>
-              </div>
+              )}
             </div>
           ))}
           {error && (
@@ -312,18 +327,18 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({
 
       <div className="mt-auto flex items-center space-x-2 pt-2 border-t border-gray-200">
         <Input
-          placeholder={`Ask SecWay AI...`}
+          placeholder="Ask SecWay AI..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-          className="flex-1 rounded-full px-4 py-2 border-gray-300 focus:border-emerald-500 focus:ring-emerald-500"
+          className="flex-1 rounded-full px-4 py-2 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
           disabled={isTyping || !genAI}
         />
         <Button
           size="icon"
           onClick={() => handleSend()}
           disabled={input.trim() === "" || isTyping || !genAI}
-          className="rounded-full flex-shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white disabled:bg-gray-400"
+          className="rounded-full flex-shrink-0 bg-orange-600 hover:bg-orange-700 text-white disabled:bg-gray-400"
         >
           <Send className="h-4 w-4" />
         </Button>

@@ -114,7 +114,7 @@ export function Options() {
       <SiteInfo />
 
       {/* Main Content Area */}
-      <div className="flex-1 p-4 overflow-y-auto"> {/* Added overflow-y-auto */}
+      <div className="flex-1 p-4"> 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-2 mb-4">
             <TabsTrigger value="permissions">
