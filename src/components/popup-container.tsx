@@ -1,14 +1,15 @@
-import React, { useState } from "react"
-import { ScanResults } from "../../components/scan-results"
-import { AIAssistant } from "../../components/ai-assistant"
-import { SiteInfo } from "../../components/site-info"
-import { Button } from "../../components/ui/button"
+import { useState } from "react"
+import { ScanResults } from "./scan-results"
+import { AIAssistant } from "./ai-assistant"
+import { SiteInfo } from "./site-info"
+import { Button } from "@/components/ui/button"
 import { Shield, ShieldCheck, Lock } from "lucide-react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs"
-import { PermissionsList } from "../../components/permissions-list"
-import { EducationalTip } from "../../components/educational-tip"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { PermissionsList } from "./permissions-list"
+import { EducationalTip } from "./educational-tip"
+import React from "react"
 
-const Popup = () => {
+export const PopupContainer = () => {
   const [isScanning, setIsScanning] = useState(false)
   const [scanComplete, setScanComplete] = useState(false)
   const [riskLevel, setRiskLevel] = useState<"low" | "medium" | "high">("medium")
@@ -133,6 +134,4 @@ const Popup = () => {
     </div>
   )
 }
-
-export default Popup
 

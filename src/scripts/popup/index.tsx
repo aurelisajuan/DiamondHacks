@@ -1,9 +1,11 @@
-import '@/styles/index.css'
-import { createRoot } from 'react-dom/client'
-import Popup from './Popup'
-import React from 'react'
+import React from "react"
+import ReactDOM from "react-dom/client"
+import Popup from "./Popup"
+import "../../styles/globals.css"
 
-const container = document.getElementById('popup-root')
-const root = createRoot(container!)
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <Popup />
+  </React.StrictMode>,
+)
 
-root.render(<Popup />)

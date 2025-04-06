@@ -1,13 +1,11 @@
-import React from 'react'
-import '@/styles/index.css'
-import { createRoot } from 'react-dom/client'
-import Options from './Options'
+import React from "react"
+import ReactDOM from "react-dom/client"
+import Options from "./Options"
+import "../../styles/globals.css"
 
-const container = document.getElementById('options-root')
-const root = createRoot(container!)
-
-root.render(
-    <React.StrictMode>
-        <Options />
-    </React.StrictMode>
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <Options />
+  </React.StrictMode>,
 )
+

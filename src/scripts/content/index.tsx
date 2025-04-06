@@ -1,44 +1,47 @@
-import React from 'react'
-import { createRoot } from 'react-dom/client'
-import styles from '@/styles/index.css?inline'
-import App from './App'
+import React from "react"
+import ReactDOM from "react-dom/client"
+import App from "./App"
+import "../../styles/globals.css"
 
-const isProduction: boolean = process.env.NODE_ENV === 'production'
-const ROOT_ID = 'RENAME_ME_IF_YOU_WANT'
+// Create a container for our React app
+const container = document.createElement("div")
+container.id = "clearlock-container"
+document.body.appendChild(container)
 
-const injectReact = (rootId: string): void => {
-    try {
-        const container = document.createElement('div')
-        document.body.appendChild(container)
+// Render the React app
+ReactDOM.createRoot(container).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)
 
-        if (container) {
-            container.id = rootId
-            container.style.position = 'inherit'
-            container.style.zIndex = '2147483666'
-        }
+// Analyze the current page
+function analyzePage() {
+  // In a real extension, you would analyze the DOM, scripts, etc.
+  const permissionsRequested = []
 
-        if (isProduction) {
-            console.log('Production mode 🚀. Adding Shadow DOM')
-            container.attachShadow({ mode: 'open' })
-        } else {
-            console.log('Development mode 🛠')
-        }
+  // Check for permission requests in the page
+  if (document.querySelector('script[src*="maps"]')) {
+    permissionsRequested.push("location")
+  }
 
-        const target: ShadowRoot | HTMLElement = isProduction ? container.shadowRoot! : container
+  if (document.querySelector("video") || document.querySelector("audio")) {
+    permissionsRequested.push("media")
+  }
 
-        const root = createRoot(target!)
-
-        root.render(
-            <React.StrictMode>
-                <>
-                    {isProduction && <style>{styles.toString()}</style>}
-                    <App />
-                </>
-            </React.StrictMode>
-        )
-    } catch (error) {
-        console.error('Error Injecting React', error)
-    }
+  // Send the results back to the extension
+  if (typeof chrome !== "undefined" && chrome.runtime) {
+    chrome.runtime.sendMessage({
+      action: "pageAnalysisComplete",
+      url: window.location.href,
+      title: document.title,
+      permissions: permissionsRequested,
+    })
+  } else {
+    console.warn("Chrome runtime is not available. This is expected outside of a Chrome extension environment.")
+  }
 }
 
-injectReact(ROOT_ID)
+// Run the analysis when the page is fully loaded
+window.addEventListener("load", analyzePage)
+
