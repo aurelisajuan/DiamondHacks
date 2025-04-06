@@ -41,7 +41,7 @@ export const SiteInfo = () => {
           <div className="truncate">
             <div className="font-medium text-sm truncate">{currentSite.title}</div>
             <div className="text-xs text-gray-500 flex items-center">
-              {currentSite.isSecure ? <Lock className="h-3 w-3 text-green-600 mr-1" /> : null}
+              {currentSite.isSecure ? <Lock className="h-3 w-3 text-orange-600 mr-1" /> : null}
               {currentSite.url}
             </div>
           </div>

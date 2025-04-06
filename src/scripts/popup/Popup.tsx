@@ -34,9 +34,9 @@ const Popup = () => {
   }
 
   return (
-    <div className="w-[400px] h-[600px] bg-white rounded-lg shadow-lg flex flex-col overflow-hidden">
+    <div className="w-[400px] h-[600px] bg-white shadow-lg flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-teal-500 to-emerald-600 p-4 text-white">
+      <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-4 text-white">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Lock className="h-6 w-6" />
@@ -63,7 +63,7 @@ const Popup = () => {
               size="lg"
               onClick={handleScan}
               disabled={isScanning}
-              className="bg-emerald-600 hover:bg-emerald-700"
+              className="bg-orange-600 hover:bg-orange-700"
             >
               {isScanning ? (
                 <>
@@ -90,7 +90,7 @@ const Popup = () => {
               <ScanResults riskLevel={riskLevel} />
               <div className="mt-4">
                 <Button
-                  className="w-full bg-emerald-600 hover:bg-emerald-700"
+                  className="w-full bg-orange-700 hover:bg-orange-900"
                   onClick={handleSecureMe}
                   disabled={isScanning || riskLevel === "low"}
                 >
