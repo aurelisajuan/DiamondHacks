@@ -73,7 +73,7 @@ const createBaseManifest = async (): Promise<Manifest> => {
       content_scripts: [
         {
           matches: ['<all_urls>'],
-          js: ['./js/content.js'],
+          js: ['./js/contentScript.js'],
           run_at: 'document_start',
         },
       ],

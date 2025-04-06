@@ -28,7 +28,7 @@
         "<all_urls>"
       ],
       "js": [
-        "./js/content.js"
+        "./js/contentScript.js"
       ],
       "run_at": "document_start"
     }
