@@ -1,5 +1,5 @@
 # SecWay
->## **Your AI Ally For Privacy You Understand**
+>### **Your AI Ally For Privacy You Understand**
 
 <p align="center">
   Build with: <br/>
