@@ -22,9 +22,33 @@ import { Lock, Bell, Settings } from "lucide-react";
 declare const chrome: any;
 
 export function Options() {
+  const [permissions, setPermissions] = useState<Record<string, string>>({});
   const [currentTabUrl, setCurrentTabUrl] = useState<string | null>(null); // Renamed for clarity
   const [activeTab, setActiveTab] = useState<string>("permissions"); // State to control Tabs value
   const [initialAiPrompt, setInitialAiPrompt] = useState<string | null>(null); // State for the pre-filled AI prompt
+
+  const permissionStatuses = [
+    {
+      title: "Camera",
+      desc: "Access to your camera",
+      status: permissions["camera"] || "unknown",
+    },
+    {
+      title: "Geolocation",
+      desc: "Access to your location",
+      status: permissions["geolocation"] || "unknown",
+    },
+    {
+      title: "Notifications",
+      desc: "Permission to send alerts",
+      status: permissions["notifications"] || "unknown",
+    },
+    {
+      title: "Microphone",
+      desc: "Access to your microphone",
+      status: permissions["microphone"] || "unknown",
+    },
+  ];
 
   useEffect(() => {
     console.log("Options: Checking chrome.storage for permissions");
@@ -63,32 +87,19 @@ export function Options() {
     return () => clearInterval(interval);
   }, []);
 
-  // Hardcoded permissions (remains the same)
-  const permissionStatuses = [
-    { title: "Camera", desc: "Access to your camera", status: "granted" },
-    { title: "Location", desc: "Access to your location", status: "warning" },
-    { title: "Notifications", desc: "Permission to send alerts", status: "denied" },
-    { title: "Microphone", desc: "Access to your microphone", status: "granted" },
-  ];
-
-  // --- New Handler ---
   const handlePermissionQuery = (permissionTitle: string) => {
-    // Set the prompt for the AI Assistant
     setInitialAiPrompt(
       `Why is granting the "${permissionTitle}" permission to websites potentially risky or important to manage? Explain in simple terms.`
     );
-    // Switch to the AI Assistant tab
     setActiveTab("assistant");
   };
 
-  // --- Function to clear the prompt after the AI uses it ---
   const consumeInitialPrompt = () => {
     setInitialAiPrompt(null);
   };
 
   return (
     <div className="w-[400px] h-[600px] bg-white flex flex-col">
-      {/* Header */}
       <div className="flex items-center justify-between p-4 text-white bg-gradient-to-r from-orange-500 to-orange-600">
         <div className="flex items-center gap-2">
           <Lock className="w-6 h-6" />
@@ -100,13 +111,10 @@ export function Options() {
         </button>
       </div>
 
-      {/* Site Information (remains the same) */}
-      {/* Pass currentTabUrl if SiteInfo needs it */}
       <SiteInfo />
 
       {/* Main Content Area */}
       <div className="flex-1 p-4 overflow-y-auto"> {/* Added overflow-y-auto */}
-        {/* --- Control Tabs component with state --- */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-2 mb-4">
             <TabsTrigger value="permissions">
@@ -138,6 +146,13 @@ export function Options() {
                         <p className="text-sm text-gray-500">
                           {item.desc}
                         </p>
+
+                        <button
+                          onClick={() => handlePermissionQuery(item.title)}
+                          className="text-xs text-blue-600 hover:underline mt-1 focus:outline-none"
+                        >
+                          Why is this important?
+                        </button>
                       </div>
                       <span
                         className={`text-xs font-semibold px-2 py-1 rounded-full border ${item.status === "granted"
@@ -174,7 +189,6 @@ export function Options() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {/* --- Pass props to AIAssistant --- */}
                 <AIAssistant
                   initialPrompt={initialAiPrompt}
                   onPromptConsumed={consumeInitialPrompt} // Pass the clearing function
@@ -185,7 +199,6 @@ export function Options() {
         </Tabs>
       </div>
 
-      {/* Footer */}
       <div className="p-3 text-xs text-center text-gray-500 border-t border-gray-200 bg-gray-50">
         SecWay • Protecting your privacy, one permission at a time
       </div>
