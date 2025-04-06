@@ -1,7 +1,7 @@
 {
-    "name": "web-extension-boilerplate-23",
-    "longName": "Web Extension Boilerplate by withSeismic.com",
-    "description": "Web Extension Boilerplate by withSeismic.com",
+    "name": "SecWay",
+    "longName": "Secure Way",
+    "description": "Your AI Ally for Privacy You Understand",
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
@@ -32,8 +32,8 @@
         "postcss": "^8.4.25",
         "prettier": "^3.0.0",
         "react": "^18.2.0",
-        "react-dom": "^18.2.0",
-        "tailwindcss": "^3.3.2",
+        "react-dom": "^18.3.1",
+        "tailwindcss": "^3.4.17",
         "ts-node": "^10.9.1",
         "typescript": "^5.1.6",
         "unplugin-auto-import": "^0.16.6",
@@ -42,5 +42,19 @@
         "webext-bridge": "^6.0.1",
         "webextension-polyfill": "^0.10.0",
         "webextension-polyfill-ts": "^0.26.0"
+    },
+    "dependencies": {
+        "@crxjs/vite-plugin": "^1.0.14",
+        "@radix-ui/react-avatar": "^1.1.3",
+        "@radix-ui/react-progress": "^1.1.2",
+        "@radix-ui/react-slider": "^1.2.3",
+        "@radix-ui/react-slot": "^1.1.2",
+        "@radix-ui/react-switch": "^1.1.3",
+        "@radix-ui/react-tabs": "^1.1.3",
+        "class-variance-authority": "^0.7.1",
+        "clsx": "^2.1.1",
+        "lucide-react": "^0.487.0",
+        "tailwind-merge": "^3.1.0",
+        "tailwindcss-animate": "^1.0.7"
     }
 }

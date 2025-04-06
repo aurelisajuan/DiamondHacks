@@ -1,46 +1,115 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from "react"
+import { Shield, X, AlertTriangle } from "lucide-react"
+
+declare const chrome: any
 
 const App = () => {
-    const [isOpen, setIsOpen] = useState(false)
+  const [visible, setVisible] = useState(false)
+  const [riskLevel, setRiskLevel] = useState<"low" | "medium" | "high">("low")
+  const [notification, setNotification] = useState({
+    title: "",
+    message: "",
+  })
 
-    const toggleIsOpen = () => {
-        setIsOpen(!isOpen)
-    }
-
-    useEffect(() => {
-        console.log('Gimme: App.tsx')
-        setIsOpen(true)
-        chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-            console.log('Gimme: Message Received', request, sender, sendResponse)
+  useEffect(() => {
+    // Listen for messages from the background script
+    chrome.runtime.onMessage.addListener((message) => {
+      if (message.action === "showNotification") {
+        setRiskLevel(message.riskLevel)
+        setNotification({
+          title: message.title,
+          message: message.message,
         })
-    }, [])
+        setVisible(true)
 
-    return (
-        <>
-            {isOpen && (
-                <div className="fixed bottom-0 right-0 p-4">
-                    <div className="inline-flex items-center justify-center h-16 rounded-full">
-                        <div className="inline-flex items-center justify-end p-2 rounded-full bg-gradient-to-r from-fuchsia-700 to-blue-400">
-                            <div className="inline-flex flex-col self-stretch justify-center gap-2 px-4">
-                                <div className="font-normal leading-tight tracking-wider text-white text-normal">
-                                    Hey, this is an overlay from the Content script, built with
-                                    React and Tailwind. Happy Building!
-                                </div>
-                            </div>
-                            <div className="inline-flex items-start self-stretch justify-start p-4 px-8 duration-200 bg-white rounded-full cursor-pointer hover:bg-gothamBlack-50">
-                                <div
-                                    className="text-base font-bold text-center text-black"
-                                    onClick={toggleIsOpen}
-                                >
-                                    Close
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-        </>
-    )
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+          setVisible(false)
+        }, 5000)
+      }
+    })
+
+    // Simulate a notification for demo purposes
+    setTimeout(() => {
+      const risks = ["low", "medium", "high"]
+      const randomRisk = risks[Math.floor(Math.random() * risks.length)] as "low" | "medium" | "high"
+
+      setRiskLevel(randomRisk)
+      setNotification({
+        title:
+          randomRisk === "high"
+            ? "High Risk Detected!"
+            : randomRisk === "medium"
+              ? "Privacy Warning"
+              : "Privacy Scan Complete",
+        message:
+          randomRisk === "high"
+            ? "This website shows signs of a potential scam. Be careful with your personal information."
+            : randomRisk === "medium"
+              ? "This website is requesting unnecessary permissions. Click to review."
+              : "This website appears to be safe. No major privacy concerns detected.",
+      })
+      setVisible(true)
+    }, 2000)
+  }, [])
+
+  if (!visible) return null
+
+  return (
+    <div className="fixed bottom-4 right-4 z-50 max-w-sm">
+      <div
+        className={`rounded-lg shadow-lg overflow-hidden ${
+          riskLevel === "high"
+            ? "bg-red-50 border border-red-200"
+            : riskLevel === "medium"
+              ? "bg-amber-50 border border-amber-200"
+              : "bg-green-50 border border-green-200"
+        }`}
+      >
+        <div
+          className={`px-4 py-3 flex items-center justify-between ${
+            riskLevel === "high" ? "bg-red-500" : riskLevel === "medium" ? "bg-amber-500" : "bg-emerald-500"
+          } text-white`}
+        >
+          <div className="flex items-center gap-2">
+            {riskLevel === "high" ? <AlertTriangle className="h-5 w-5" /> : <Shield className="h-5 w-5" />}
+            <span className="font-medium">{notification.title}</span>
+          </div>
+          <button onClick={() => setVisible(false)} className="text-white hover:text-gray-100">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        <div className="p-4">
+          <p
+            className={`text-sm ${
+              riskLevel === "high" ? "text-red-700" : riskLevel === "medium" ? "text-amber-700" : "text-green-700"
+            }`}
+          >
+            {notification.message}
+          </p>
+          <div className="mt-3 flex justify-end">
+            <button
+              className={`px-3 py-1 rounded-md text-sm font-medium ${
+                riskLevel === "high"
+                  ? "bg-red-100 text-red-700 hover:bg-red-200"
+                  : riskLevel === "medium"
+                    ? "bg-amber-100 text-amber-700 hover:bg-amber-200"
+                    : "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"
+              }`}
+              onClick={() => {
+                // Open the extension popup
+                chrome.runtime.sendMessage({ action: "openPopup" })
+                setVisible(false)
+              }}
+            >
+              {riskLevel === "high" ? "Review Now" : "Details"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export default App
+
