@@ -48,10 +48,10 @@
         "http://*/*"
       ],
       "resources": [
-        "dist\\js\\index.js",
-        "dist\\js\\options.js",
-        "dist\\js\\popup.js",
-        "dist\\js\\service-worker.js"
+        "dist/js/index.js",
+        "dist/js/options.js",
+        "dist/js/popup.js",
+        "dist/js/service-worker.js"
       ]
     }
   ]

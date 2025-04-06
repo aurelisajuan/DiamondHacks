@@ -35,7 +35,7 @@ export const PopupContainer = () => {
   }
 
   return (
-    <div className="w-[400px] h-[600px] bg-white rounded-lg shadow-lg flex flex-col overflow-hidden">
+    <div className="w-[400px] h-[600px] bg-white shadow-lg flex flex-col overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-r from-teal-500 to-emerald-600 p-4 text-white">
         <div className="flex items-center justify-between">
