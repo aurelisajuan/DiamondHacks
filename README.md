@@ -12,10 +12,10 @@
 
 ### Inspiration
 Today’s web is full of hidden threats—phishing scams, data leaks, and overreaching permissions. But most users don’t read the fine print. In fact, 62% never change app or website permissions after first use. This puts millions at risk, especially those who aren't tech-savvy.
-Inspired by the need for simple, accessible cybersecurity, ClearLock is an AI-powered Chrome extension that demystifies digital privacy. No jargon. No backend. Just friendly, clear protection.
+Inspired by the need for simple, accessible cybersecurity, SecWay is an AI-powered Chrome extension that demystifies digital privacy.
 
 ### What It Does
-ClearLock acts as a lightweight, always-on browser companion that helps users see and understand when websites or extensions are asking for too much.
+SecWay acts as a lightweight, always-on browser companion that helps users see and understand when websites or extensions are asking for too much.
 Key features include:
 - **Real-Time Privacy Scanner**: Detects risky permissions, overreaching data requests, and suspicious website behavior.
 - **AI-Powered Privacy Guidance**: GPT-4 provides human-friendly explanations and smart recommendations—no technical knowledge needed.
@@ -39,7 +39,7 @@ Key features include:
 - Conversational AI in Extensions – Leveraging GPT-4 in the browser opens up powerful possibilities for live education.
 - Interoperability of APIs – Combining public APIs like Google Safe Browsing and PhishTank enabled real-time risk assessment.
 
-### What's Next for ClearLock
+### What's Next for SecWay
 - Firefox & Edge Support – Extend protection beyond Chrome.
 - School + Library Outreach – Partner with public orgs to build privacy awareness from the ground up.
 - Scam Detection Leaderboard – Community-reported scam sites for public good.
