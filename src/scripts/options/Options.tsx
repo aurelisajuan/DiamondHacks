@@ -67,7 +67,7 @@ export function Options() {
 
       {/* Site Information (remains the same) */}
       {/* Pass currentTabUrl if SiteInfo needs it */}
-      <SiteInfo url={currentTabUrl} />
+      <SiteInfo />
 
       {/* Main Content Area */}
       <div className="flex-1 p-4 overflow-y-auto"> {/* Added overflow-y-auto */}
