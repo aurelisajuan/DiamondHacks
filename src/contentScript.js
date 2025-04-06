@@ -1,5 +1,6 @@
 // Function to check permissions
 async function checkPermissions() {
+    console.log("Content script: Starting permission check");
     const permissionsToCheck = [
         "camera",
         "microphone",
@@ -27,18 +28,20 @@ async function checkPermissions() {
     }
 
     if (completedChecks === permissionsToCheck.length) {
-        console.log("All permissions results:", results);
-        // Send the results back to the extension
-        chrome.runtime.sendMessage({
-            type: "PERMISSIONS_RESULT",
-            permissions: results,
+        console.log("Content script: All permissions results:", results);
+        // Store the results in chrome.storage
+        chrome.storage.local.set({ secway_permissions: results }, () => {
+            console.log("Content script: Permissions stored in chrome.storage");
         });
     }
 }
 
+console.log("Content script: Script loaded");
 // Execute the permission check
 if (document.readyState === "loading") {
+    console.log("Content script: Waiting for DOMContentLoaded");
     document.addEventListener("DOMContentLoaded", checkPermissions);
 } else {
+    console.log("Content script: DOM already loaded, checking permissions");
     checkPermissions();
 }
