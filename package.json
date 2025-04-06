@@ -1,7 +1,7 @@
 {
-    "name": "web-extension-boilerplate-23",
-    "longName": "Web Extension Boilerplate by withSeismic.com",
-    "description": "Web Extension Boilerplate by withSeismic.com",
+    "name": "SecWay",
+    "longName": "Secure Way",
+    "description": "Your AI Ally for Privacy You Understand",
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
