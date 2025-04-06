@@ -3,7 +3,7 @@ import type { ManifestV3Export } from "@crxjs/vite-plugin"
 // Define the manifest object
 const manifest: ManifestV3Export = {
   manifest_version: 3,
-  name: "ClearLock",
+  name: "SecWay",
   version: "1.0.0",
   description: "Your AI Ally for Privacy You Understand",
   action: {
