@@ -15,6 +15,11 @@ type Message = {
   timestamp: Date;
 };
 
+interface AIAssistantProps {
+  initialPrompt?: string | null;
+  onPromptConsumed?: () => void; // Callback function
+}
+
 const SYSTEM_INSTRUCTION = `You are SecWay, a friendly and helpful AI assistant focused on web privacy and security within a browser extension. Your goal is to help non-technical users understand potential risks like excessive permissions, suspicious website behavior, and data collection. Explain concepts clearly and simply using straightforward language. Provide actionable recommendations for securing settings. Keep your tone encouraging, helpful, and educational. Do not mention that you are an AI model.`;
 
 
@@ -28,7 +33,10 @@ const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY; // Using Vite's env 
 // Use the specific preview model ID requested
 const MODEL_ID = "gemini-2.5-pro-preview-03-25"; // Make sure you have access!
 
-export const AIAssistant = () => {
+export const AIAssistant: React.FC<AIAssistantProps> = ({
+  initialPrompt,
+  onPromptConsumed
+}) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
@@ -80,41 +88,42 @@ export const AIAssistant = () => {
     scrollToBottom();
   }, [messages, isTyping]);
 
-  const handleSend = async () => {
-    if (input.trim() === "" || !genAI || isTyping) {
+  const handleSend = useCallback(async (promptToSend?: string) => {
+    const contentToSend = promptToSend ?? input.trim(); // Use passed prompt or current input
+
+    if (contentToSend === "" || !genAI || isTyping) {
       if (!genAI) setError("AI Client not initialized. Check API Key/console.");
       return;
     }
 
-    const userMessageContent = input;
-    setInput("");
+    // Clear input field only if the prompt didn't come from the prop
+    if (!promptToSend) {
+      setInput("");
+    }
     setError(null);
 
     const userMessage: Message = {
       id: Date.now(),
-      content: userMessageContent,
+      content: contentToSend,
       sender: "user",
       timestamp: new Date(),
     };
 
-    // --- History preparation (temporarily unused for API call debugging) ---
+    // History preparation (remains the same)
     const conversationHistory: Content[] = messages
-      .filter((msg, index) => index !== 0) // Exclude the first message (initial greeting)
+      .filter((msg, index) => index !== 0) // Exclude initial greeting
       .map(msg => ({
         role: msg.sender === "user" ? "user" : "model",
         parts: [{ text: msg.content }]
       }));
 
+    // API Contents Preparation including System Prompt
     const apiContents: Content[] = [
-      // Start with the system instruction (framed as the first 'user' turn, followed by a model acknowledgement)
       { role: "user", parts: [{ text: SYSTEM_INSTRUCTION }] },
-      { role: "model", parts: [{ text: "Okay, I understand my role as SecWay. I'm ready to help with web privacy and security." }] }, // AI acknowledges the system prompt
-      // Then add the actual conversation history
+      { role: "model", parts: [{ text: "Okay, I understand my role as SecWay. I'm ready to help with web privacy and security." }] }, // AI acknowledges
       ...conversationHistory,
-      // Finally, add the newest user message
-      { role: "user", parts: [{ text: userMessageContent }] } // Renamed from newUserMessage for clarity within this scope
+      { role: "user", parts: [{ text: contentToSend }] } // The actual user prompt
     ];
-
 
     const assistantMessageId = Date.now() + 1;
     const placeholderAiMessage: Message = {
@@ -128,63 +137,48 @@ export const AIAssistant = () => {
     setCurrentStreamedMessageId(assistantMessageId);
     setIsTyping(true);
 
-
     try {
-      console.log(`Starting stream from ${MODEL_ID}:`, userMessageContent);
+      console.log(`Starting stream from ${MODEL_ID}:`, contentToSend);
 
-      // --- Call generateContentStream (DEBUGGING: History Removed) ---
-      const streamResponse = await genAI.models.generateContentStream({
-        model: MODEL_ID,
-        // --- Temporarily sending only the current message to debug 400 error ---
+      const streamResult = await genAI.models.generateContentStream({
+        model: MODEL_ID, // Pass model ID here
         contents: apiContents,
-        // generationConfig and safetySettings might need specific handling for streams
       });
 
-      // --- Process the stream ---
-      let firstChunk = true;
       let accumulatedText = '';
-
-      for await (const chunk of streamResponse) {
-        if (firstChunk) {
-          console.log("First Stream Chunk:", JSON.stringify(chunk, null, 2));
-          firstChunk = false;
-        }
-        const chunkText = chunk.text; // Based on tutorial example
-
+      // Process stream
+      for await (const chunk of streamResult.stream) { // Access stream property
+        const chunkText = chunk.text(); // Call text() method
         if (chunkText) {
           accumulatedText += chunkText;
-          // --- Update State Incrementally ---
           setMessages(prevMessages =>
             prevMessages.map(msg =>
               msg.id === assistantMessageId ? { ...msg, content: accumulatedText } : msg
             )
           );
         }
-      } // End of stream loop
-
+      }
       console.log("Stream finished.");
-      // If the stream finishes successfully with history removed, the next step is to fix history formatting.
 
     } catch (err) {
       console.error(`Error during stream from ${MODEL_ID}:`, err);
-      // --- Updated Error Handling for 400 ---
+      // --- Error Handling (keep your robust error handling) ---
       let displayError = `Sorry, error communicating with ${MODEL_ID}.`;
       if (err instanceof Error) {
-        const errorDetails = (err as any)?.response?.data?.error || (err as any)?.message || String(err); // Try to get deeper error message
+        const errorDetails = (err as any)?.response?.data?.error?.message || (err as any)?.message || String(err);
         displayError = `Stream Error: ${errorDetails}`;
         if (String(err).includes('400')) {
-          displayError += " (Bad Request - check model access, request format, or content structure)";
-        } else if (String(err).includes('API key not valid')) {
-          displayError += " (Check your API Key in .env)";
-        } else if (String(errorDetails).includes('SAFETY')) {
-          displayError = "Stream stopped due to safety settings.";
+          displayError += " (Bad Request - check model access, request format, history structure, or safety filters)";
+        } else if (String(err).includes('API key not valid') || String(err).includes('PERMISSION_DENIED')) {
+          displayError += " (Check your API Key in .env or API permissions)";
+        } else if (String(errorDetails).includes('SAFETY') || (err as any)?.response?.promptFeedback?.blockReason) {
+          displayError = `Stream stopped due to safety settings. Reason: ${(err as any)?.response?.promptFeedback?.blockReason || 'Safety Filter'}`;
         }
-        console.error("Error Details:", err); // Log the whole error object
+        console.error("Full Error Object:", err);
       } else {
-        displayError = `Stream Error: ${String(err)}`; // Handle non-Error objects
+        displayError = `Stream Error: ${String(err)}`;
       }
       setError(displayError);
-      // Update placeholder message with error
       setMessages(prevMessages =>
         prevMessages.map(msg =>
           msg.id === assistantMessageId ? { ...msg, content: `Error: ${displayError}` } : msg
@@ -194,10 +188,32 @@ export const AIAssistant = () => {
     } finally {
       setIsTyping(false);
       setCurrentStreamedMessageId(null);
+      // If the send was triggered by a prop, clear the input field *after* sending
+      if (promptToSend) {
+        setInput("");
+      }
+    }
+  }, [genAI, input, isTyping, messages, onPromptConsumed, safetySettings, generationConfig]); // Add dependencies
+
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSend();
     }
   };
 
-  // ... (handleKeyPress and JSX rendering remains largely the same) ...
+  useEffect(() => {
+    if (initialPrompt && !isTyping && genAI) { // Check if prompt exists, not currently typing, and AI is ready
+      console.log("Received initial prompt:", initialPrompt);
+      // We call handleSend directly, passing the prompt
+      handleSend(initialPrompt);
+      // Call the callback to reset the prompt state in the parent component
+      onPromptConsumed?.();
+    }
+    // Intentionally excluding handleSend from dependencies here to avoid loops if it changes unnecessarily often.
+    // We rely on useCallback for handleSend stability.
+    // We *do* need initialPrompt, isTyping, genAI, and onPromptConsumed as dependencies.
+  }, [initialPrompt, isTyping, genAI, onPromptConsumed, handleSend]);
 
   // Render warning if API key is missing
   if (!genAI) { // Check if genAI client initialized successfully
@@ -250,6 +266,7 @@ export const AIAssistant = () => {
           onChange={(e) => setInput(e.target.value)}
           className="flex-1 rounded-full px-4 py-2 border-gray-300 focus:border-emerald-500 focus:ring-emerald-500"
           disabled={isTyping || !genAI}
+          onKeyDown={handleKeyPress}
         />
         <Button
           size="icon"
