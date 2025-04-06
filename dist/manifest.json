@@ -19,7 +19,9 @@
     "48": "./assets/icon-48.png",
     "128": "./assets/icon-128.png"
   },
-  "permissions": [],
+  "permissions": [
+    "scripting"
+  ],
   "content_scripts": [
     {
       "matches": [
@@ -27,7 +29,8 @@
       ],
       "js": [
         "./js/content.js"
-      ]
+      ],
+      "run_at": "document_start"
     }
   ],
   "commands": {
@@ -45,10 +48,10 @@
         "http://*/*"
       ],
       "resources": [
-        "dist/js/index.js",
-        "dist/js/options.js",
-        "dist/js/popup.js",
-        "dist/js/service-worker.js"
+        "dist\\js\\index.js",
+        "dist\\js\\options.js",
+        "dist\\js\\popup.js",
+        "dist\\js\\service-worker.js"
       ]
     }
   ]
