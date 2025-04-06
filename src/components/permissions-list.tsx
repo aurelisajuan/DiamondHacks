@@ -11,8 +11,7 @@ export const PermissionsList = () => {
     { id: 2, name: "Camera", icon: Camera, enabled: false, risk: "medium" },
     { id: 3, name: "Location", icon: MapPin, enabled: true, risk: "high" },
     { id: 4, name: "Notifications", icon: Bell, enabled: true, risk: "low" },
-    { id: 5, name: "Cookies", icon: Database, enabled: true, risk: "medium" },
-    { id: 6, name: "Activity Tracking", icon: Eye, enabled: true, risk: "high" },
+
   ])
 
   const togglePermission = (id: number) => {
