@@ -9,10 +9,9 @@
         "start": "concurrently \"npm run dev\" \"npm run build\"",
         "tailwind": "tailwindcss -i src/styles/index.css -o dist/assets/index.css",
         "dev": "vite",
-        "build": "tsc && vite build && npm run build:js && npm run build:contentScript",
+        "build": "tsc && vite build && npm run build:contentScript",
         "build:pre": "esno scripts/prebuild.ts",
         "build:post": "esno scripts/postbuild.ts",
-        "build:js": "vite build --config vite.config.content.ts",
         "build:contentScript": "vite build --config vite.config.contentScript.ts",
         "preview": "vite preview"
     },

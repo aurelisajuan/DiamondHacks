@@ -7,13 +7,9 @@ export default defineConfig({
         emptyOutDir: false,
         lib: {
             entry: r("src/contentScript.js"),
-            formats: ["iife"],
             name: "contentScript",
-        },
-        rollupOptions: {
-            output: {
-                entryFileNames: "contentScript.js",
-            },
+            fileName: () => "contentScript.js",
+            formats: ["iife"],
         },
     },
 });
